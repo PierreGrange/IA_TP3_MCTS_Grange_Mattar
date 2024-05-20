@@ -30,7 +30,7 @@ public class GamePanel extends JPanel implements GameEngine {
 
     //GamePlayer player1 = new AIPlayerRealtimeKiller(1,6,true);
     GamePlayer player1 = new HumanPlayer(1);
-    GamePlayer player2 = new AIPlayerDynamic(2,6);
+    GamePlayer player2 = new AIPlayerRealtime(2,6);
 
     Timer player1HandlerTimer;
     Timer player2HandlerTimer;
