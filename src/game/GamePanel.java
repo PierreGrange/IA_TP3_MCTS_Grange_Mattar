@@ -2,6 +2,7 @@ package game;
 
 import player.*;
 import player.ai.*;
+import player.ia.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,7 +31,7 @@ public class GamePanel extends JPanel implements GameEngine {
 
     //GamePlayer player1 = new AIPlayerRealtimeKiller(1,6,true);
     GamePlayer player1 = new AIPlayerRealtime(1,6);
-    GamePlayer player2 = new HumanPlayer(2);
+    GamePlayer player2 = new IAMCTSPlayer(2);
 
     Timer player1HandlerTimer;
     Timer player2HandlerTimer;
