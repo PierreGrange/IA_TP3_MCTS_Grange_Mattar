@@ -41,7 +41,7 @@ public class EvaluatorCustom implements Evaluator {
             value += mobilityWeight * evalMobility(board, player);
         }
         if(discDiff) {
-            value += mobilityWeight * evalDiscDiff(board, player);
+            value += discDiffWeight * evalDiscDiff(board, player);
         }
         if(corner) {
             value += cornerWeight * evalCorner(board, player);
