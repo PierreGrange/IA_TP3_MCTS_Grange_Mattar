@@ -26,7 +26,7 @@ public class Minimax {
             }
         }
         System.out.println("Nodes Explored : " + nodesExplored);
-        printMM(board, player, depth, e);
+        //printMM(board, player, depth, e);
         return bestMove;
     }
 

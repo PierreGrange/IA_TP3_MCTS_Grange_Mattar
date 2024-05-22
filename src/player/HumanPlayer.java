@@ -1,8 +1,11 @@
 package player;
 
 import game.GamePlayer;
+import player.ia.EvaluatorCustom;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class HumanPlayer extends GamePlayer {
 
@@ -25,4 +28,8 @@ public class HumanPlayer extends GamePlayer {
         return null;
     }
 
+    @Override
+    public EvaluatorCustom getEvaluator() {
+        return new EvaluatorCustom(new ArrayList<>(Arrays.asList("")));
+    }
 }

@@ -1,21 +1,19 @@
 package player.ia;
 
 import game.GamePlayer;
-import player.ai.Evaluator;
-import player.ai.Minimax;
-import player.ai.StaticEvaluator;
 
 import java.awt.*;
+import java.util.ArrayList;
 
-public class IAPlayerMinmax extends GamePlayer {
+public class IAPlayerMinimax extends GamePlayer {
 
     private int searchDepth;
-    private Evaluator evaluator;
+    private EvaluatorCustom evaluator;
 
-    public IAPlayerMinmax(int mark, int depth) {
+    public IAPlayerMinimax(int mark, int depth, ArrayList<String> functions) {
         super(mark);
         searchDepth = depth;
-        evaluator = new StaticEvaluator();
+        evaluator = new EvaluatorCustom(functions);
     }
 
     @Override
@@ -25,11 +23,16 @@ public class IAPlayerMinmax extends GamePlayer {
 
     @Override
     public String playerName() {
-        return "Static AI (Depth " + searchDepth + ")";
+        return "Minimax AI (Depth " + searchDepth + ")";
     }
 
     @Override
     public Point play(int[][] board) {
         return Minimax.solve(board, myMark, searchDepth, evaluator);
+    }
+
+    @Override
+    public EvaluatorCustom getEvaluator() {
+        return evaluator;
     }
 }

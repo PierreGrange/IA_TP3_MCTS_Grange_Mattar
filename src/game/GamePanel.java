@@ -1,11 +1,14 @@
 package game;
 
 import player.*;
-import player.ai.*;
+import player.ai.AIPlayerStatic;
+import player.ia.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class GamePanel extends JPanel implements GameEngine {
 
@@ -20,6 +23,8 @@ public class GamePanel extends JPanel implements GameEngine {
     BoardCell[][] cells;
     JLabel score1;
     JLabel score2;
+    JLabel labelFunctions1;
+    JLabel labelFunctions2;
 
     int totalscore1 = 0;
     int totalscore2 = 0;
@@ -27,10 +32,13 @@ public class GamePanel extends JPanel implements GameEngine {
     JLabel tscore1;
     JLabel tscore2;
 
+    ArrayList<String> functionListIA1 = new ArrayList<>(Arrays.asList("mobility", "discDiff", "corner", "boardMap", "parity"));
 
-    //GamePlayer player1 = new AIPlayerRealtimeKiller(1,6,true);
-    GamePlayer player1 = new AIPlayerRealtime(1,6);
-    GamePlayer player2 = new HumanPlayer(2);
+    //GamePlayer player1 = new AIPlayerStatic(1,6);
+    GamePlayer player1 = new IAPlayerAlphaBeta(1,6, functionListIA1);
+    //GamePlayer player2 = new IAPlayerAlphaBeta(2, 6, functionListIA1);
+    GamePlayer player2 = new IAPlayerMinimax(2, 6, functionListIA1);
+    //GamePlayer player2 = new HumanPlayer(2);
 
     Timer player1HandlerTimer;
     Timer player2HandlerTimer;
@@ -72,18 +80,34 @@ public class GamePanel extends JPanel implements GameEngine {
 
         score1 = new JLabel("Score 1");
         score2 = new JLabel("Score 2");
+        labelFunctions1 = new JLabel("Evaluation functions :");
 
         tscore1 = new JLabel("Total Score 1");
         tscore2 = new JLabel("Total Score 2");
+        labelFunctions2 = new JLabel("Evaluation functions :");
 
         sidebar.add(score1);
         sidebar.add(score2);
+        sidebar.add(new JLabel(" "));
+        sidebar.add(labelFunctions1);
+
+
+        for(String s : player1.getEvaluator().getFunctionList()) {
+            JLabel function = new JLabel(s);
+            sidebar.add(function);
+        }
 
         sidebar.add(new JLabel("-----------"));
 
         sidebar.add(tscore1);
         sidebar.add(tscore2);
+        sidebar.add(new JLabel(" "));
+        sidebar.add(labelFunctions2);
 
+        for(String s : player2.getEvaluator().getFunctionList()) {
+            JLabel function = new JLabel(s);
+            sidebar.add(function);
+        }
 
         this.add(sidebar,BorderLayout.WEST);
         this.add(reversiBoard);
@@ -146,6 +170,7 @@ public class GamePanel extends JPanel implements GameEngine {
             //game finished
             System.out.println("Game Finished !");
             int winner = BoardHelper.getWinner(board);
+            System.out.println("Winner : " + winner);
             if(winner==1) totalscore1++;
             else if(winner==2) totalscore2++;
             updateTotalScore();

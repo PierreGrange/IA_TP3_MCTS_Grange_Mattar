@@ -1,5 +1,7 @@
 package game;
 
+import player.ia.EvaluatorCustom;
+
 import java.awt.*;
 
 public abstract class GamePlayer {
@@ -15,4 +17,5 @@ public abstract class GamePlayer {
 
     abstract public Point play(int[][] board);
 
+    abstract public EvaluatorCustom getEvaluator();
 }

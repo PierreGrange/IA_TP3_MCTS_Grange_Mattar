@@ -14,25 +14,35 @@ public class EvaluatorCustom implements Evaluator {
     int cornerWeight = 1;
     int boardMapWeight = 1;
     int parityWeight = 1;
+    ArrayList<String> functionList;
 
     public EvaluatorCustom(ArrayList<String> functions) {
+        this.functionList = functions;
+        ArrayList<String> functionsLabels = new ArrayList<>();
+
         for(String f : functions) {
             if(f == "mobility") {
                 mobility = true;
+                functionsLabels.add("-Mobility");
             }
             if(f == "discDiff") {
                 discDiff = true;
+                functionsLabels.add("-Disc difference");
             }
             if(f == "corner") {
                 corner = true;
+                functionsLabels.add("-Corner control");
             }
             if(f == "boardMap") {
                 boardMap = true;
+                functionsLabels.add("-Board Map");
             }
             if(f == "parity") {
                 parity = true;
+                functionsLabels.add("-Parity");
             }
         }
+        this.functionList = functionsLabels;
     }
 
     public int eval(int[][] board , int player){
@@ -54,5 +64,13 @@ public class EvaluatorCustom implements Evaluator {
         }
 
         return value;
+    }
+
+    public ArrayList<String> getFunctionList(){
+        if(functionList.isEmpty()) {
+            functionList.add("None");
+            return functionList;
+        }
+        return functionList;
     }
 }

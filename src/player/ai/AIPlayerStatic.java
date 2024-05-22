@@ -1,8 +1,11 @@
 package player.ai;
 
 import game.GamePlayer;
+import player.ia.EvaluatorCustom;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class AIPlayerStatic extends GamePlayer {
 
@@ -28,5 +31,10 @@ public class AIPlayerStatic extends GamePlayer {
     @Override
     public Point play(int[][] board) {
         return Minimax.solve(board,myMark,searchDepth,evaluator);
+    }
+
+    @Override
+    public EvaluatorCustom getEvaluator() {
+        return new EvaluatorCustom(new ArrayList<>(Arrays.asList("")));
     }
 }

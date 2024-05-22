@@ -1,9 +1,11 @@
 package player;
 
 import game.*;
+import player.ia.EvaluatorCustom;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 public class GreedyPlayer extends GamePlayer {
@@ -42,4 +44,8 @@ public class GreedyPlayer extends GamePlayer {
 
     }
 
+    @Override
+    public EvaluatorCustom getEvaluator() {
+        return new EvaluatorCustom(new ArrayList<>(Arrays.asList("")));
+    }
 }
