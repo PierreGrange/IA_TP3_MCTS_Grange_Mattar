@@ -26,7 +26,7 @@ public class AlphaBeta {
             }
         }
         System.out.println("Nodes Explored : " + nodesExplored);
-        printMMAB(board, player, depth, e);
+        //printMMAB(board, player, depth, e);
         return bestMove;
     }
 

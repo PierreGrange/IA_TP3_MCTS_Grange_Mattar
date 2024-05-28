@@ -5,21 +5,22 @@ import game.GamePlayer;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
-public class IAMCTSPlayer extends GamePlayer {
+public class IAPlayerMCTS extends GamePlayer {
 
     private final Random random = new Random();
     private int simulation;
     private double constant;
 
-    public IAMCTSPlayer(int mark, int simulation, double constant) {
+    public IAPlayerMCTS(int mark, int simulation, double constant) {
         super(mark);
         this.simulation = simulation;
         this.constant = constant;
     }
 
-    public IAMCTSPlayer(int mark) {
+    public IAPlayerMCTS(int mark) {
         super(mark);
         this.simulation = 1000;
         this.constant = Math.sqrt(2);
@@ -38,6 +39,12 @@ public class IAMCTSPlayer extends GamePlayer {
     @Override
     public Point play(int[][] board) {
         return UCT(board, myMark);
+    }
+
+
+    @Override
+    public EvaluatorCustom getEvaluator() {
+        return new EvaluatorCustom(new ArrayList<>(Arrays.asList("")));
     }
 
     private Point UCT(int[][] board, int player) {

@@ -1,12 +1,15 @@
 package game;
 
-import player.*;
-import player.ai.*;
+import player.HumanPlayer;
 import player.ia.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class GamePanel extends JPanel implements GameEngine {
 
@@ -21,6 +24,8 @@ public class GamePanel extends JPanel implements GameEngine {
     BoardCell[][] cells;
     JLabel score1;
     JLabel score2;
+    JLabel labelFunctions1;
+    JLabel labelFunctions2;
 
     int totalscore1 = 0;
     int totalscore2 = 0;
@@ -28,10 +33,24 @@ public class GamePanel extends JPanel implements GameEngine {
     JLabel tscore1;
     JLabel tscore2;
 
+    ArrayList<String> functionListIA1 = new ArrayList<>(Arrays.asList("mobility", "discDiff", "corner", "boardMap", "parity"));
 
-    //GamePlayer player1 = new AIPlayerRealtimeKiller(1,6,true);
-    GamePlayer player1 = new AIPlayerRealtime(1,6);
-    GamePlayer player2 = new IAMCTSPlayer(2);
+
+    //GamePlayer player1 = new HumanPlayer(1);
+    //GamePlayer player2 = new IAPlayerMinimax(2, 6, functionListIA1);
+    //GamePlayer player2 = new IAPlayerAlphaBeta(2, 6, functionListIA1);
+    //GamePlayer player2 = new IAMCTSPlayer(1,1000, 42);
+
+    //Disable this to play manually
+    boolean autoplay = true;
+    GamePlayer player1;
+    GamePlayer player2;
+
+    int nextDuel = 0;
+    int lastDuel;
+    int round = 1;
+    int rounds;
+    String duelsListPath = "duels.txt";
 
     Timer player1HandlerTimer;
     Timer player2HandlerTimer;
@@ -66,6 +85,19 @@ public class GamePanel extends JPanel implements GameEngine {
             }
         }
 
+        // INITIALIZE PLAYERS if autoplay is on
+        if(autoplay) {
+            try {
+                initializePlayersForIATest();
+            }
+            catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        else {
+            player1 = new HumanPlayer(1);
+            player2 = new HumanPlayer(1);
+        }
 
         JPanel sidebar = new JPanel();
         sidebar.setLayout(new BoxLayout(sidebar,BoxLayout.Y_AXIS));
@@ -73,18 +105,38 @@ public class GamePanel extends JPanel implements GameEngine {
 
         score1 = new JLabel("Score 1");
         score2 = new JLabel("Score 2");
+        labelFunctions1 = new JLabel("Evaluation functions :");
 
         tscore1 = new JLabel("Total Score 1");
         tscore2 = new JLabel("Total Score 2");
+        labelFunctions2 = new JLabel("Evaluation functions :");
 
         sidebar.add(score1);
         sidebar.add(score2);
+        sidebar.add(new JLabel(" "));
+        sidebar.add(labelFunctions1);
+
+        if(player1.getEvaluator() != null) {
+            for(String s : player1.getEvaluator().getFunctionList()) {
+                JLabel function = new JLabel(s);
+                sidebar.add(function);
+            }
+        }
+
 
         sidebar.add(new JLabel("-----------"));
 
         sidebar.add(tscore1);
         sidebar.add(tscore2);
+        sidebar.add(new JLabel(" "));
+        sidebar.add(labelFunctions2);
 
+        if(player2.getEvaluator() != null) {
+            for(String s : player2.getEvaluator().getFunctionList()) {
+                JLabel function = new JLabel(s);
+                sidebar.add(function);
+            }
+        }
 
         this.add(sidebar,BorderLayout.WEST);
         this.add(reversiBoard);
@@ -147,13 +199,35 @@ public class GamePanel extends JPanel implements GameEngine {
             //game finished
             System.out.println("Game Finished !");
             int winner = BoardHelper.getWinner(board);
+            System.out.println("Winner : " + winner);
             if(winner==1) totalscore1++;
             else if(winner==2) totalscore2++;
             updateTotalScore();
-            //restart
-            //resetBoard();
-            //turn=1;
-            //manageTurn();
+
+            try {
+                IADuelParser.updateWins(duelsListPath, nextDuel, winner);
+            }
+            catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            if(round != rounds) {
+                round++;
+                //restart
+                resetBoard();
+                manageTurn();
+            }
+            else if(nextDuel != lastDuel){
+                try {
+                    initializePlayersForIATest();
+                }
+                catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                resetBoard();
+                manageTurn();
+            }
+
         }
     }
 
@@ -235,4 +309,44 @@ public class GamePanel extends JPanel implements GameEngine {
         repaint();
     }
 
+    public void initializePlayersForIATest() throws IOException {
+        List<List<Object>> aiSettings = IADuelParser.parseAIFile(duelsListPath);
+
+        if (aiSettings.size() < 1) {
+            throw new IllegalArgumentException("Insufficient settings provided");
+        }
+
+        List<Object> settings = (List<Object>) aiSettings.get(nextDuel); // Assuming the first set of settings for initialization
+        int player1Type = (int) settings.get(0);
+        ArrayList<String> player1Functions = (ArrayList<String>) settings.get(1);
+        int player2Type = (int) settings.get(2);
+        ArrayList<String> player2Functions = (ArrayList<String>) settings.get(3);
+
+        if (player1Type == 1) {
+            player1 = new IAPlayerMinimax(1, 6, player1Functions);
+        } else if (player1Type == 2) {
+            player1 = new IAPlayerAlphaBeta(1, 6, player1Functions);
+        } else if (player1Type == 3) {
+            player1 = new IAPlayerMCTS(1, 1000, 42);
+        } else {
+            throw new IllegalArgumentException("Unknown player1 type: " + player1Type);
+        }
+
+        if (player2Type == 1) {
+            player2 = new IAPlayerMinimax(2, 6, player2Functions);
+        } else if (player2Type == 2) {
+            player2 = new IAPlayerAlphaBeta(2, 6, player2Functions);
+        } else if (player2Type == 3) {
+            player2 = new IAPlayerMCTS(2, 1000, 42);
+        } else {
+            throw new IllegalArgumentException("Unknown player2 type: " + player2Type);
+        }
+
+        round = 1;
+        rounds = (int) settings.get(4);
+        lastDuel = aiSettings.size();
+        nextDuel++;
+        // Update the sidebar to reflect the new player evaluators
+        //updateSidebar();
+    }
 }
