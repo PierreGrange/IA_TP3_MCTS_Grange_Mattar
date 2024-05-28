@@ -95,15 +95,21 @@ public class IAMCTSPlayer extends GamePlayer {
             player = (player == 1) ? 2 : 1;
             winner = BoardHelper.getWinner(state);
         }
-        return winner;
+      if (winner == myMark) {
+        return 1;
+      }
+      else if( winner != 0){
+        return -1;
+      }
+      else {
+        return 0;
+      }
     }
 
-    private void backPropagate(MCTSNode node, int winner) {
+    private void backPropagate(MCTSNode node, int bonus) {
         while (node != null) {
             node.visits++;
-            if (winner == myMark) {
-                node.wins++;
-            }
+            node.wins=node.wins+bonus;
             node = node.parent;
         }
     }
