@@ -2,6 +2,7 @@ package player.ai;
 
 import game.BoardHelper;
 import game.BoardPrinter;
+import player.ia.Evaluator;
 
 import java.awt.*;
 import java.util.ArrayList;
