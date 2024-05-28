@@ -327,7 +327,7 @@ public class GamePanel extends JPanel implements GameEngine {
         } else if (player1Type == 2) {
             player1 = new IAPlayerAlphaBeta(1, 6, player1Functions);
         } else if (player1Type == 3) {
-            player1 = new IAPlayerMCTS(1, 1000, 42);
+            player1 = new IAPlayerMCTS(1);
         } else {
             throw new IllegalArgumentException("Unknown player1 type: " + player1Type);
         }
