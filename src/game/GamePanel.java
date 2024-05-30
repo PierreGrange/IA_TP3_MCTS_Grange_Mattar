@@ -90,9 +90,9 @@ public class GamePanel extends JPanel implements GameEngine {
         }
         else { ///////////////////////////////// CHOOSE PLAYER TYPES /////////////////////////////////
             player1 = new HumanPlayer(1);
-            //player2 = new IAPlayerAlphaBeta(2, 6, functionListIA1);
+            player2 = new IAPlayerAlphaBeta(2, 6, functionListIA1);
             //player2 = new IAMCTSPlayer(2,10000, 42);
-            player2 = new IAPlayerMinimax(2, 6, functionListIA1);
+            //player2 = new IAPlayerMinimax(2, 6, functionListIA1);
         }
 
         JPanel sidebar = new JPanel();
