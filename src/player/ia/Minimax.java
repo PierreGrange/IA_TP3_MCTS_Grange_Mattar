@@ -47,6 +47,7 @@ public class Minimax {
 
     //returns minimax value for a given node (without A/B pruning)
     private static int MM(int[][] node, int player, int depth, boolean max, EvaluatorCustom e){
+        nodesExplored++;
         //if terminal reached or depth limit reached evaluate
         if(depth == 0 || BoardHelper.isGameFinished(node)){
             //BoardPrinter bpe = new BoardPrinter(node,"Depth : " + depth);
@@ -55,7 +56,7 @@ public class Minimax {
         int oplayer = (player==1) ? 2 : 1;
         //if no moves available then forfeit turn
         if((max && !BoardHelper.hasAnyMoves(node,player)) || (!max && !BoardHelper.hasAnyMoves(node,oplayer))){
-            System.out.println("Forfeit State Reached !");
+            //System.out.println("Forfeit State Reached !");
             return MM(node,player,depth-1,!max, e);
         }
         int score;

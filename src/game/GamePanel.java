@@ -35,21 +35,15 @@ public class GamePanel extends JPanel implements GameEngine {
 
     ArrayList<String> functionListIA1 = new ArrayList<>(Arrays.asList("mobility", "discDiff", "corner", "boardMap", "parity"));
 
-
-    //GamePlayer player1 = new HumanPlayer(1);
-    //GamePlayer player2 = new IAPlayerMinimax(2, 6, functionListIA1);
-    //GamePlayer player2 = new IAPlayerAlphaBeta(2, 6, functionListIA1);
-    //GamePlayer player2 = new IAMCTSPlayer(1,1000, 42);
-
-    //Disable this to play manually
-    boolean autoplay = true;
+    ///////////////////////////////// DISABLE THIS to choose player types
+    boolean autoplay = false;
     GamePlayer player1;
     GamePlayer player2;
 
     int nextDuel = 0;
-    int lastDuel;
+    int lastDuel = 0;
     int round = 1;
-    int rounds;
+    int rounds = 1;
     String duelsListPath = "duels.txt";
 
     Timer player1HandlerTimer;
@@ -85,7 +79,7 @@ public class GamePanel extends JPanel implements GameEngine {
             }
         }
 
-        // INITIALIZE PLAYERS if autoplay is on
+        ///////////////////////////////// INITIALIZE PLAYERS if autoplay is on /////////////////////////////////
         if(autoplay) {
             try {
                 initializePlayersForIATest();
@@ -94,9 +88,11 @@ public class GamePanel extends JPanel implements GameEngine {
                 throw new RuntimeException(e);
             }
         }
-        else {
+        else { ///////////////////////////////// CHOOSE PLAYER TYPES /////////////////////////////////
             player1 = new HumanPlayer(1);
-            player2 = new HumanPlayer(1);
+            //player2 = new IAPlayerAlphaBeta(2, 6, functionListIA1);
+            //player2 = new IAMCTSPlayer(2,10000, 42);
+            player2 = new IAPlayerMinimax(2, 6, functionListIA1);
         }
 
         JPanel sidebar = new JPanel();

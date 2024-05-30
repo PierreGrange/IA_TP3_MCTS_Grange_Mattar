@@ -22,7 +22,7 @@ public class IAPlayerMCTS extends GamePlayer {
 
     public IAPlayerMCTS(int mark) {
         super(mark);
-        this.simulation = 1000;
+        this.simulation = 10000;
         this.constant = Math.sqrt(2);
     }
 

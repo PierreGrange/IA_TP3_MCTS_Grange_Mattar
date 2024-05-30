@@ -74,15 +74,7 @@ public class EvaluatorCustom implements Evaluator {
 
 
 
-    public static int evalDiscDiff(int[][] board , int player){
-        int oplayer = (player==1) ? 2 : 1;
-
-        int mySC = BoardHelper.getPlayerStoneCount(board,player);
-        int opSC = BoardHelper.getPlayerStoneCount(board,oplayer);
-
-        return 100 * (mySC - opSC) / (mySC + opSC);
-    }
-
+//region Fonctions d'évaluation
     public static int evalMobility(int[][] board , int player){
         int oplayer = (player==1) ? 2 : 1;
 
@@ -90,6 +82,15 @@ public class EvaluatorCustom implements Evaluator {
         int opMoveCount = BoardHelper.getAllPossibleMoves(board,oplayer).size();
 
         return 100 * (myMoveCount - opMoveCount) / (myMoveCount + opMoveCount + 1);
+    }
+
+    public static int evalDiscDiff(int[][] board , int player){
+        int oplayer = (player==1) ? 2 : 1;
+
+        int mySC = BoardHelper.getPlayerStoneCount(board,player);
+        int opSC = BoardHelper.getPlayerStoneCount(board,oplayer);
+
+        return 100 * (mySC - opSC) / (mySC + opSC);
     }
 
     public static int evalCorner(int[][] board , int player){
@@ -173,4 +174,5 @@ public class EvaluatorCustom implements Evaluator {
         int remDiscs = 64 - BoardHelper.getTotalStoneCount(board);
         return remDiscs % 2 == 0 ? -1 : 1;
     }
+//endregion
 }
